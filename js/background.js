@@ -1,55 +1,59 @@
 var mediaStorage = [];
 
-// chrome.webRequest.onBeforeRequest.addListener(
-//   function(media) {
-//     chrome.tabs.get(media.tabId, function(tab) {
-//       mediaStorage[media.tabId] = { tab: tab.url, url: media.url };
-//     });
-//     chrome.pageAction.show(media.tabId);
-//   },
-//   // filters
-//   {
-//     urls: ['https://*/*', 'http://*/*'],
-//     types: ['media']
-//   },
-// );
-
-chrome.webRequest.onCompleted.addListener(
-  function (media) {
+chrome.webRequest.onBeforeRequest.addListener(
+  function(media) {
+    console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
-      if (media.statusCode != 200 || media.type == "image" || media.type == "script" || media.frameType != "sub_frame") return;
-      var contenttype = "";
-      media.responseHeaders.forEach(function(v,i,a){
-        if (v.name.toLowerCase() == "content-type"){
-          contenttype = v.value;
-        }
-      });
-      if (contenttype.indexOf("application/json") > -1
-        || contenttype.indexOf("application/javascript") > -1
-        || contenttype.indexOf("text/html") > -1
-        || contenttype.indexOf("image") > -1
-        || contenttype.indexOf("text/plain") > -1) return;
-
-      console.log(media);
-      console.log(tab);
-      var objValue = { tab: tab.url, url: media.url };
+      //mediaStorage[media.tabId] = { tab: tab.url, url: media.url };
+      var objValue = { url: media.url };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
       else mediaStorage[media.tabId].push(objValue);
-      console.log(mediaStorage[media.tabId]);
     });
     chrome.pageAction.show(media.tabId);
   },
   // filters
   {
-    urls: [
-      'https://*/*', 'http://*/*'
-    ],
-    types: [
-      'media', "xmlhttprequest"
-    ],
+    urls: ['https://*/*', 'http://*/*'],
+    types: ['media']
   },
-  ["responseHeaders"]
 );
+
+// chrome.webRequest.onCompleted.addListener(
+//   function (media) {
+//     chrome.tabs.get(media.tabId, function(tab) {
+//       console.log(media);
+//       if (media.statusCode != 200 || media.type == "image" || media.type == "script" || media.frameType != "sub_frame") return;
+//       var contenttype = "";
+//       media.responseHeaders.forEach(function(v,i,a){
+//         if (v.name.toLowerCase() == "content-type"){
+//           contenttype = v.value;
+//         }
+//       });
+//       if (contenttype.indexOf("application/json") > -1
+//         || contenttype.indexOf("application/javascript") > -1
+//         || contenttype.indexOf("text/html") > -1
+//         || contenttype.indexOf("image") > -1
+//         || contenttype.indexOf("text/plain") > -1) return;
+
+//       console.log(media);
+//       var objValue = { tab: tab.url, url: media.url };
+//       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
+//       else mediaStorage[media.tabId].push(objValue);
+//       console.log(mediaStorage[media.tabId]);
+//     });
+//     chrome.pageAction.show(media.tabId);
+//   },
+//   // filters
+//   {
+//     urls: [
+//       'https://*/*', 'http://*/*'
+//     ],
+//     types: [
+//       'media', "xmlhttprequest"
+//     ],
+//   },
+//   ["responseHeaders"]
+// );
 
 chrome.runtime.onMessage.addListener(
   function(req, sender, sendRes) {
