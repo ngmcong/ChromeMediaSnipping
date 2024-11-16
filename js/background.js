@@ -4,10 +4,11 @@ chrome.webRequest.onBeforeRequest.addListener(
   function(media) {
     console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
-      //mediaStorage[media.tabId] = { tab: tab.url, url: media.url };
       var objValue = { url: media.url };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
-      else mediaStorage[media.tabId].push(objValue);
+      else {
+        if (!mediaStorage.includes(objValue)) mediaStorage[media.tabId].push(objValue);
+      }
     });
     chrome.pageAction.show(media.tabId);
   },
