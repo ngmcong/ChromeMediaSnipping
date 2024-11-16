@@ -2,12 +2,13 @@ var mediaStorage = [];
 
 chrome.webRequest.onBeforeRequest.addListener(
   function(media) {
-    console.log(media);
+    //console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
       var objValue = { url: media.url };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
       else {
-        if (!mediaStorage.includes(objValue)) mediaStorage[media.tabId].push(objValue);
+        var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);
+        if (!containsObject) mediaStorage[media.tabId].push(objValue);
       }
     });
     chrome.pageAction.show(media.tabId);
@@ -17,6 +18,39 @@ chrome.webRequest.onBeforeRequest.addListener(
     urls: ['https://*/*', 'http://*/*'],
     types: ['media']
   },
+);
+
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  function(media) {
+    if (media.url.endsWith('.png')) return;
+    var contenttype = "";
+    media.requestHeaders.forEach(function(v,i,a){
+      if (v.name.toLowerCase() == "content-type"){
+        contenttype = v.value;
+      }
+    });
+    if (contenttype.indexOf("application/json") > -1
+      || contenttype.indexOf("application/javascript") > -1
+      || contenttype.indexOf("text/html") > -1
+      || contenttype.indexOf("image") > -1
+      || contenttype.indexOf("text/plain") > -1) return;
+    console.log(media);
+    chrome.tabs.get(media.tabId, function(tab) {
+      var objValue = { url: media.url };
+      if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
+      else {
+        var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);
+        if (!containsObject) mediaStorage[media.tabId].push(objValue);
+      }
+    });
+    chrome.pageAction.show(media.tabId);
+  },
+  // filters
+  {
+    urls: ['https://*/*', 'http://*/*'],
+    types: ['xmlhttprequest']
+  },
+  ["requestHeaders"],
 );
 
 // chrome.webRequest.onCompleted.addListener(
