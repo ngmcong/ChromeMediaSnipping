@@ -25,11 +25,17 @@ chrome.webRequest.onCompleted.addListener(
         }
       });
       if (contenttype.indexOf("application/json") > -1
+        || contenttype.indexOf("application/javascript") > -1
         || contenttype.indexOf("text/html") > -1
-        || contenttype.indexOf("image/png") > -1
+        || contenttype.indexOf("image") > -1
         || contenttype.indexOf("text/plain") > -1) return;
+
       console.log(media);
-      mediaStorage[media.tabId] = { tab: tab.url, url: media.url };
+      console.log(tab);
+      var objValue = { tab: tab.url, url: media.url };
+      if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
+      else mediaStorage[media.tabId].push(objValue);
+      console.log(mediaStorage[media.tabId]);
     });
     chrome.pageAction.show(media.tabId);
   },
@@ -51,12 +57,12 @@ chrome.runtime.onMessage.addListener(
       return;
     chrome.storage.sync.get(null, function(opt) {
       var media = mediaStorage[req.tabId];
-      var src = (opt.source == 'MEDIA URL') ? media.url : media.tab;
 
-      if (opt.output)
-        sendToPlaylist(src, opt.dest);
+      //var src = (opt.source == 'MEDIA URL') ? media.url : media.tab;
+      //if (opt.output) sendToPlaylist(src, opt.dest);
 
-      sendRes({ tab: media.tab, media: media.url, opt: opt });
+      //sendRes({ tab: media.tab, media: media, opt: opt });
+      sendRes({ tab: '', media: media, opt: opt });
     });
     return true;
 });

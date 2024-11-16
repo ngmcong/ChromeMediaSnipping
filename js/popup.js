@@ -1,6 +1,8 @@
 function setDOMInfo(info) {
   $('#tabURL').text(info.tab);
-  $('#mediaURL').text(info.media);
+  var objMedia = JSON.stringify(info.media);
+  console.log(objMedia);
+  $('#mediaURL').text(objMedia);
   if (info.opt.dest !== undefined) $('#dest').text(info.opt.dest);
   if (info.opt.source !== undefined) $('#src').text(info.opt.source);
   if (!info.opt.output) $('#output').hide();
