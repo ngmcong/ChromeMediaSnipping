@@ -41,7 +41,7 @@ chrome.webRequest.onHeadersReceived.addListener(
       || contenttype.indexOf("text/plain") > -1) return;
     console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
-      var objValue = { url: media.url, contentLength: contentLength };
+      var objValue = { url: media.url, contentLength: contentLength, initiator: media.initiator };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
       else {
         var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);

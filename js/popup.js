@@ -47,9 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
 // });
 
 $('#go-to-download').on('click', function() {
-    if (popupData.length == 1) {
+    if (popupData.length > 0) {
+        var data = { url: popupData[0].url, initiator: popupData[0].initiator };
+        console.log(data);
         try {
-            $.post("http://127.0.0.1:60024/", popupData[0].url);
+            $.post("http://127.0.0.1:60024/", JSON.stringify({ url: popupData[0].url, initiator: popupData[0].initiator }));
         }
         catch (e) {
             alert(e);
