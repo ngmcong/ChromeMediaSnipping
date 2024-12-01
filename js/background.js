@@ -1,34 +1,39 @@
 var mediaStorage = [];
 
-chrome.webRequest.onBeforeRequest.addListener(
-  function(media) {
-    //console.log(media);
-    chrome.tabs.get(media.tabId, function(tab) {
-      var objValue = { url: media.url };
-      if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
-      else {
-        var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);
-        if (!containsObject) mediaStorage[media.tabId].push(objValue);
-      }
-    });
-    chrome.pageAction.show(media.tabId);
-  },
-  // filters
-  {
-    urls: ['https://*/*', 'http://*/*'],
-    types: ['media']
-  },
-);
+// chrome.webRequest.onBeforeRequest.addListener(
+//   function(media) {
+//     //console.log(media);
+//     chrome.tabs.get(media.tabId, function(tab) {
+//       var objValue = { url: media.url };
+//       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
+//       else {
+//         var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);
+//         if (!containsObject) mediaStorage[media.tabId].push(objValue);
+//       }
+//     });
+//     chrome.pageAction.show(media.tabId);
+//   },
+//   // filters
+//   {
+//     urls: ['https://*/*', 'http://*/*'],
+//     types: ['media']
+//   },
+// );
 
-chrome.webRequest.onBeforeSendHeaders.addListener(
+chrome.webRequest.onHeadersReceived.addListener(
   function(media) {
     if (media.url.endsWith('.png')) return;
     var contenttype = "";
-    media.requestHeaders.forEach(function(v,i,a){
+    var contentLength;
+    media.responseHeaders.forEach(function(v,i,a){
       if (v.name.toLowerCase() == "content-type"){
         contenttype = v.value;
       }
+      else if (v.name.toLowerCase() == "content-length"){
+        contentLength = Math.round(parseFloat(v.value) / 1024 / 1024);
+      }
     });
+    if (contentLength <= 0) return;
     if (contenttype.indexOf("application/json") > -1
       || contenttype.indexOf("application/javascript") > -1
       || contenttype.indexOf("text/html") > -1
@@ -36,7 +41,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       || contenttype.indexOf("text/plain") > -1) return;
     console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
-      var objValue = { url: media.url };
+      var objValue = { url: media.url, contentLength: contentLength };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
       else {
         var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);
@@ -48,9 +53,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   // filters
   {
     urls: ['https://*/*', 'http://*/*'],
-    types: ['xmlhttprequest']
+    types: ['media','xmlhttprequest']
   },
-  ["requestHeaders"],
+  ["responseHeaders"],
 );
 
 // chrome.webRequest.onCompleted.addListener(
