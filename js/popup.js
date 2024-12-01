@@ -1,12 +1,15 @@
+var popupData;
+
 function setDOMInfo(info) {
     $('#tabURL').text(info.tab);
     // var objMedia = JSON.stringify(info.media, null, '<br />');
     // console.log(objMedia);
     // $('#mediaURL').html(objMedia);
+    popupData = info.media;
     try {
         var node = new PrettyJSON.view.Node({
             el: $('#result'),
-            data: info.media
+            data: popupData
         });
     }
     catch (e) {
@@ -42,3 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
 //     window.open(chrome.runtime.getURL('options.html'));
 //   }
 // });
+
+$('#go-to-download').on('click', function() {
+    if (popupData.length == 1) {
+        try {
+            $.post("http://127.0.0.1:60024/", popupData[0].url);
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+});
