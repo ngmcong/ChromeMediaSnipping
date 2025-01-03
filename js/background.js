@@ -26,10 +26,10 @@ chrome.webRequest.onHeadersReceived.addListener(
     var contenttype = "";
     var contentLength;
     media.responseHeaders.forEach(function(v,i,a){
-      if (v.name.toLowerCase() == "content-type"){
+      if (v.name.toLowerCase() == "content-type") {
         contenttype = v.value;
       }
-      else if (v.name.toLowerCase() == "content-length"){
+      else if (v.name.toLowerCase() == "content-length") {
         contentLength = Math.round(parseFloat(v.value) / 1024 / 1024);
       }
     });
@@ -39,9 +39,10 @@ chrome.webRequest.onHeadersReceived.addListener(
       || contenttype.indexOf("text/html") > -1
       || contenttype.indexOf("image") > -1
       || contenttype.indexOf("text/plain") > -1) return;
+    if (contenttype.indexOf("video/") > -1 && contentLength < 100) return;
     console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
-      var objValue = { url: media.url, contentLength: contentLength, initiator: media.initiator };
+      var objValue = { url: media.url, contentLength: contentLength, initiator: media.initiator, contenttype: contenttype };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
       else {
         var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);

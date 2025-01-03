@@ -48,10 +48,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 $('#go-to-download').on('click', function() {
     if (popupData.length > 0) {
-        var data = { url: popupData[0].url, initiator: popupData[0].initiator };
+        var dIndex = popupData.length - 1;
+        var data = { url: popupData[dIndex].url, initiator: popupData[dIndex].initiator };
         console.log(data);
         try {
-            $.post("http://127.0.0.1:60024/", JSON.stringify({ url: popupData[0].url, initiator: popupData[0].initiator }));
+            $.post("http://127.0.0.1:60024/", JSON.stringify(data));
         }
         catch (e) {
             alert(e);
