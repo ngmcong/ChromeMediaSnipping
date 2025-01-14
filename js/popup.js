@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
 $('#go-to-download').on('click', function() {
     if (popupData.length > 0) {
         var dIndex = popupData.length - 1;
+        popupData.sort(function(a, b){return a.contenttype.length-b.contenttype.length});
         var data = { url: popupData[dIndex].url, initiator: popupData[dIndex].initiator };
         console.log(data);
         try {
