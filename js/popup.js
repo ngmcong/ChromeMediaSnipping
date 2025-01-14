@@ -49,8 +49,12 @@ document.addEventListener('DOMContentLoaded', function () {
 $('#go-to-download').on('click', function() {
     if (popupData.length > 0) {
         var dIndex = popupData.length - 1;
-        popupData.sort(function(a, b){return a.contenttype.length-b.contenttype.length});
+        //popupData.sort(function(a, b){return a.contenttype.length-b.contenttype.length});
         var data = { url: popupData[dIndex].url, initiator: popupData[dIndex].initiator };
+        var firstM3u8s = popupData.filter((e) => e.contenttype == 'application/vnd.apple.mpegurl');
+        if (firstM3u8s.length > 0) {
+            data = { url: firstM3u8s[0].url, initiator: firstM3u8s[0].initiator };
+        }
         console.log(data);
         try {
             $.post("http://127.0.0.1:60024/", JSON.stringify(data));
