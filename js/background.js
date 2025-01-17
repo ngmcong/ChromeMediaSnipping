@@ -22,7 +22,6 @@ var mediaStorage = [];
 
 chrome.webRequest.onHeadersReceived.addListener(
   function(media) {
-    console.log(media);
     if (media.url.endsWith('.png')) return;
     var contenttype = "";
     var contentLength;
@@ -34,7 +33,8 @@ chrome.webRequest.onHeadersReceived.addListener(
         contentLength = Math.round(parseFloat(v.value) / 1024 / 1024);
       }
     });
-    if (contentLength <= 0) return;
+    console.log(media);
+    if (contentLength <= 0 && contenttype != "application/vnd.apple.mpegurl") return;
     if (contenttype.indexOf("application/json") > -1
       || contenttype.indexOf("application/javascript") > -1
       || contenttype.indexOf("text/html") > -1
