@@ -53,7 +53,7 @@ $('#go-to-download').on('click', function() {
         var data = { url: popupData[dIndex].url, initiator: popupData[dIndex].initiator };
         var firstM3u8s = popupData.filter((e) => e.contenttype == 'application/vnd.apple.mpegurl');
         if (firstM3u8s.length > 0) {
-            data = { url: firstM3u8s[0].url, initiator: firstM3u8s[0].initiator };
+            data = { url: firstM3u8s[firstM3u8s.length - 1].url, initiator: firstM3u8s[firstM3u8s.length - 1].initiator };
         }
         console.log(data);
         try {

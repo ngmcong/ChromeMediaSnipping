@@ -22,6 +22,7 @@ var mediaStorage = [];
 
 chrome.webRequest.onHeadersReceived.addListener(
   function(media) {
+    console.log(media);
     if (media.url.endsWith('.png')) return;
     var contenttype = "";
     var contentLength;
