@@ -43,7 +43,7 @@ chrome.webRequest.onHeadersReceived.addListener(
     if (contenttype.indexOf("video/") > -1 && contentLength < 100) return;
     console.log(media);
     chrome.tabs.get(media.tabId, function(tab) {
-      var objValue = { url: media.url, contentLength: contentLength, initiator: media.initiator, contenttype: contenttype };
+      var objValue = { url: media.url, contentLength: contentLength, initiator: media.initiator, contenttype: contenttype, title: tab.title };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];
       else {
         var containsObject = mediaStorage[media.tabId].map(element => element.url).includes(media.url);
