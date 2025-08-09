@@ -50,7 +50,7 @@ chrome.webRequest.onHeadersReceived.addListener(
         if (!containsObject) mediaStorage[media.tabId].push(objValue);
       }
     });
-    chrome.pageAction.show(media.tabId);
+    // chrome.pageAction.show(media.tabId);
   },
   // filters
   {

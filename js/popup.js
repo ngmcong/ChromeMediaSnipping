@@ -3,9 +3,9 @@ var popupData;
 function setDOMInfo(info) {
     $('#tabURL').text(info.tab);
     // var objMedia = JSON.stringify(info.media, null, '<br />');
-    // console.log(objMedia);
     // $('#mediaURL').html(objMedia);
     popupData = info.media;
+    console.log('setDOMInfo',' popupData ', popupData)
     try {
         var node = new PrettyJSON.view.Node({
             el: $('#result'),
@@ -14,6 +14,8 @@ function setDOMInfo(info) {
     }
     catch (e) {
         $('#tabURL').text(e);
+        //console.error('setDOMInfo', e);
+        $('#result').html(popupData);
     }
 
     if (info.opt.dest !== undefined) $('#dest').text(info.opt.dest);
