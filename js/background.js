@@ -33,15 +33,16 @@ chrome.webRequest.onHeadersReceived.addListener(
         contentLength = Math.round(parseFloat(v.value) / 1024 / 1024);
       }
     });
-    console.log(media);
-    if (contentLength <= 0 && contenttype != "application/vnd.apple.mpegurl") return;
+    console.log('check contenttype 1: ', contenttype, ' - ', media);
+    if (contentLength <= 0 && (contenttype != "application/vnd.apple.mpegurl" && contenttype != "application/x-mpegurl; charset=utf-8")) return;
+    console.log('check contenttype 2: ', contenttype, ' - ', media);
     if (contenttype.indexOf("application/json") > -1
       || contenttype.indexOf("application/javascript") > -1
       || contenttype.indexOf("text/html") > -1
       || contenttype.indexOf("image") > -1
       || contenttype.indexOf("text/plain") > -1) return;
     if (contenttype.indexOf("video/") > -1 && contentLength < 100) return;
-    console.log(media);
+    console.log('check contenttype 3: ', contenttype, ' - ', media);
     chrome.tabs.get(media.tabId, function(tab) {
       var objValue = { url: media.url, contentLength: contentLength, initiator: media.initiator, contenttype: contenttype, title: tab.title, page: tab.url };
       if (!mediaStorage[media.tabId]) mediaStorage[media.tabId] = [ objValue ];

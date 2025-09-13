@@ -11,6 +11,7 @@ function setDOMInfo(info) {
             el: $('#result'),
             data: popupData
         });
+        console.log('setDOMInfo',' data ', popupData);
     }
     catch (e) {
         $('#tabURL').text(e);
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         active: true,
         currentWindow: true
     }, function (tabs) {
+        console.log('DOMContentLoaded',' tabs ', tabs);
         chrome.runtime.sendMessage({
             event: 'getMedia',
             tabId: tabs[0].id
@@ -49,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // });
 
 $('#go-to-download').on('click', function() {
+    console.log('go-to-download',' popupData ', popupData);
     if (popupData.length > 0) {
         try {
             $.post("http://127.0.0.1:60024/", JSON.stringify(popupData));
